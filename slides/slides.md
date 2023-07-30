@@ -543,7 +543,7 @@ CMD ["echo", "Hello, world!"]
 - 在同一目录下，执行如下命令：
 
 ```shell
-docker build -t hello:echo .
+docker build -t hello:hello .
 ```
 
 </v-click>
@@ -553,7 +553,7 @@ docker build -t hello:echo .
 - 运行镜像：
 
 ```shell
-docker run --rm hello:echo
+docker run --rm hello:hello
 ```
 </v-click>
 
@@ -573,8 +573,8 @@ layout: statement
 
 ```shell
 hello
-docker build -t hello:echo .
-docker run --rm hello:echo
+docker build -t hello:hello .
+docker run --rm hello:hello
 ```
 
  -->
@@ -820,3 +820,107 @@ docker images
   - 由于 `scratch` 镜像不包含标准库，我们需要用 `-static` 选项静态链接标准库
 
 </v-clicks>
+
+---
+
+# `ENTRYPOINT`
+
+<v-click>
+
+- 我们前面构建的 `hello` 镜像都只能输出固定的字符串，假设我们现在希望能够首先输出一段文字，再输出用户指定的字符串
+
+```dockerfile
+FROM alpine
+
+CMD ["echo", "Quotation of the Day:", "To be or not to be, that is the question."]
+```
+
+</v-click>
+
+<v-click>
+
+- 用户可以通过在运行容器时自定义命令来覆盖 Dockerfile 中定义的命令：
+
+```shell
+docker run --rm hello:echo echo Quotation of the Day: '4G + HarmonyOS > 5G'
+```
+
+</v-click>
+
+<v-clicks>
+
+- 但这样每次用户都需要重复输入一大串前缀，同时用户也能输出其他内容或者执行别的命令，而我们希望这个镜像只用来做「带上一个固定前缀输出某些东西」这一件事
+
+- 我们可以使用 `ENTRYPOINT` 来指定容器启动时运行的命令，而 `CMD` 此时会指定默认的参数，用户可以通过在运行容器时指定参数来覆盖默认参数
+
+- 这样就可以构建作为命令行工具使用的镜像
+
+</v-clicks>
+
+---
+
+# `ENTRYPOINT`
+
+<v-clicks>
+
+- `Dockerfile`:
+
+```dockerfile {1-5|3}
+FROM alpine
+
+ENTRYPOINT ["echo", "Quotation of the Day:"]
+
+CMD ["To be or not to be, that is the question."]
+```
+
+- 构建：
+
+```shell
+docker build -t quote .
+```
+
+- 运行：
+
+```shell
+docker run --rm quote '4G + HarmonyOS > 5G'
+```
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+
+```shell
+../entrypoint
+docker build -t quote .
+docker run --rm quote '4G + HarmonyOS > 5G'
+```
+
+ -->
+
+---
+
+# `ENTRYPOINT` 与 `CMD`
+
+<v-clicks>
+
+- `ENTRYPOINT` 和 `CMD` 的区别在于，`ENTRYPOINT` 指定的命令不会被 `docker run` 末尾的参数覆盖，而 `CMD` 指定的命令可以被覆盖
+
+  - 可以使用 `--entrypoint` 选项强制覆盖 `ENTRYPOINT`，但一般不会使用
+
+- 不使用 `ENTRYPOINT` 的镜像更像是一个运行环境，`CMD` 是在此环境中执行的程序
+
+  - 如我们使用的 `alpine` 使用 `sh` 作为默认的 `CMD`
+
+- 使用 `ENTRYPOINT` 的镜像更像是一个程序，`CMD` 是程序的参数
+
+  - 如我们的 `quote` 镜像，用户输入的字符串作为一部分参数，而执行的命令是固定的
+
+</v-clicks>
+
+
