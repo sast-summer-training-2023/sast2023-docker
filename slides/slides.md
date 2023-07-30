@@ -1,433 +1,323 @@
 ---
-theme: seriph
-background: https://source.unsplash.com/collection/94734566/1920x1080
-class: text-center
-highlighter: shiki
-lineNumbers: false
-info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
-
-  Learn more at [Sli.dev](https://sli.dev)
-drawings:
-  persist: false
-transition: slide-left
-title: Welcome to Slidev
+theme: apple-basic
+layout: intro
+title: Docker
 ---
 
-# Welcome to Slidev
+# Docker
 
-Presentation slides for developers
-
-<div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
+<div class="absolute bottom-10">
+  <span class="font-700">
+    王博文 @abmfy 2023 年 7 月 31 日
   </span>
 </div>
 
-<div class="abs-br m-6 flex gap-2">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" alt="GitHub"
-    class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon-logo-github />
-  </a>
-</div>
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
----
-transition: fade-out
 ---
 
-# What is Slidev?
+# 目录
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
-
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - theme can be shared and used with npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embedding Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export into PDF, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - anything possible on a webpage
-
-<br>
-<br>
-
-Read more about [Why Slidev?](https://sli.dev/guide/why)
-
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/guide/syntax#embedded-styles
--->
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
-<!--
-Here is another comment.
--->
-
----
-layout: default
----
-
-# Table of contents
-
-```
-<Toc minDepth="1" maxDepth="5"></Toc>
-```
-
-<Toc></Toc>
-
----
-transition: slide-up
-
-level: 2
----
-
-# Navigation
-
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/navigation.html)
-
-### Keyboard Shortcuts
-
-|     |     |
-| --- | --- |
-| <kbd>right</kbd> / <kbd>space</kbd>| next animation or slide |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd> | previous slide |
-| <kbd>down</kbd> | next slide |
-
-<!-- https://sli.dev/guide/animations.html#click-animations -->
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
+asd
 
 ---
 layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
+image: 'assets/docker.png'
 ---
 
-# Code
+# Docker
 
-Use code snippets and get the highlighting directly![^1]
+<v-clicks>
 
-```ts {all|2|1-6|9|all}
-interface User {
-  id: number
-  firstName: string
-  lastName: string
-  role: string
-}
+- 吉祥物 Moby Dock
 
-function updateUser(id: number, update: User) {
-  const user = getUser(id)
-  const newUser = { ...user, ...update }
-  saveUser(id, newUser)
-}
-```
 
-<arrow v-click="3" x1="400" y1="420" x2="230" y2="330" color="#564" width="3" arrowSize="1" />
+- 最初是 dotCloud 公司的内部项目
 
-[^1]: [Learn More](https://sli.dev/guide/syntax.html#line-highlighting)
+- 2013 年 3 月以 Apache 2.0 协议开源
 
-<style>
-.footnotes-sep {
-  @apply mt-20 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
+- 开放容器联盟 OCI (Open Container Initiative)
+
+</v-clicks>
 
 ---
-
-# Components
-
-<div grid="~ cols-2 gap-4">
-<div>
-
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
-</div>
-<div>
-
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
-<!--
-Presenter note with **bold**, *italic*, and ~~striked~~ text.
-
-Also, HTML elements are valid:
-<div class="flex w-full">
-  <span style="flex-grow: 1;">Left content</span>
-  <span>Right content</span>
-</div>
--->
-
-
----
-class: px-20
+layout: image-right
+image: 'assets/moby-with-friends.png'
 ---
 
-# Themes
+# Docker
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
+<v-clicks>
 
-<div grid="~ cols-2 gap-2" m="-t-2">
+- 使用 Go 语言实现
 
-```yaml
----
-theme: default
----
-```
+  - Moby 和 Gopher 等小伙伴在一起玩耍
 
-```yaml
----
-theme: seriph
----
-```
+- 基于 Linux 内核的 cgroup、namespace 以及 UnionFS 等技术实现对进程的封装隔离
 
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true">
+- 最初基于 LXC (Linux Containers)，后来转向自行开发的 `libcontainer`
 
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/themes/use.html) and
-check out the [Awesome Themes Gallery](https://sli.dev/themes/gallery.html).
-
----
-preload: false
----
-
-# Animations
-
-Animations are powered by [@vueuse/motion](https://motion.vueuse.org/).
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }">
-  Slidev
-</div>
-```
-
-<div class="w-60 relative mt-6">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-square.png"
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-circle.png"
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-triangle.png"
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 40, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn More](https://sli.dev/guide/animations.html#motion)
-
-</div>
+</v-clicks>
 
 ---
 
-# LaTeX
+# 配置环境的痛苦...
 
-LaTeX is supported out-of-box powered by [KaTeX](https://katex.org/).
+<v-clicks>
 
-<br>
+- 大家或许或多或少都有过配环境的惨痛经历...
 
-Inline $\sqrt{3x-1}+(1+x)^2$
+- 在大一的课程中，配环境基本上是配置本地的开发环境
 
-Block
-$$
-\begin{array}{c}
+- 但在之后的课程，我们往往需要配置应用的运行环境
 
-\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
-= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
+  - 例如，《软件工程》课程中前后端、数据库的运行环境
 
-\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
+- 如果别人的应用在你的电脑上运行不了，他却信誓旦旦地告诉你「我这里没问题啊」...
 
-\nabla \cdot \vec{\mathbf{B}} & = 0
+  - 各种各样的原因，例如操作系统不同、依赖版本冲突等等
 
-\end{array}
-$$
+- [您配吗？](https://github.com/RimoChan/match-you)：删掉别人的环境，这样你就可以看着他配环境了
 
-<br>
-
-[Learn more](https://sli.dev/guide/syntax#latex)
+</v-clicks>
 
 ---
 
-# Diagrams
+# 虚拟化
 
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
+<v-clicks>
 
-<div class="grid grid-cols-3 gap-10 pt-4 -mb-6">
+- 我们需要某种「虚拟化」技术，将应用本身与运行环境某种程度上解耦合！
 
-```mermaid {scale: 0.5}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
+- 封装：将应用与运行环境封装在一起，形成一个「虚拟的」运行环境
 
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
+- 隔离：应用之间的运行环境互不影响
 
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectivness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
-```
+- 我们需要一种手段，将应用及所需要的环境打包并交付给其他人使用
 
-```plantuml {scale: 0.7}
-@startuml
+  - 这样，应用始终能够在一致的环境下运行，而不需要反复配置环境
 
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
+- 我们需要将应用环境与系统环境隔离
 
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
-
-</div>
-
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
+</v-clicks>
 
 ---
-src: ./pages/multiple-entries.md
-hide: false
----
+
+# 虚拟机
+
+<v-clicks>
+
+- 虚拟机是一种完整的虚拟化技术
+
+- 在同一台物理机上通过 Hypervisor 等硬件虚拟化技术模拟出多个虚拟机
+
+- 每个虚拟机都有自己的操作系统，应用 (连同其运行环境) 都在虚拟机中运行
+
+- 这样，只要把虚拟机直接打包给其他人，他们就可以直接运行了！
+
+- 问题解决了！
+
+- ...吗？
+
+</v-clicks>
 
 ---
-layout: center
-class: text-center
+
+# 虚拟机？
+
+<v-clicks>
+
+- 即使是运行一个 Hello World，也需要启动一个完整的操作系统
+
+  - 数 GB 到数十 GB 的硬盘空间，巨大的内存和 CPU 资源占用...
+
+- 我们真的需要完整虚拟出一台虚拟机吗？
+
+- 虚拟机完整地虚拟出一套硬件，在其上运行独立的操作系统
+
+- 但应用往往并不关心运行的硬件环境
+
+  - 硬件环境的复杂性应该，而且能够由操作系统来解决
+
+- 应用只关心软件环境中有没有需要的依赖
+
+  - 因此我们只需要虚拟出一个软件环境即可
+
+- Docker 正是这样一个「轻量级」的虚拟化技术
+
+</v-clicks>
+
 ---
 
-# Learn More
+# Docker 容器与虚拟机
 
-[Documentations](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/showcases.html)
+<v-clicks>
+
+- Docker 将应用放在「容器」中运行
+
+- 容器直接运行在宿主机的内核上，不需要启动完整的操作系统，也没有硬件虚拟化
+
+- 因此，运行一个容器对操作系统来说，和运行一个普通进程没有太大区别
+
+</v-clicks>
+
+<v-click>
+
+|特性|容器|虚拟机|
+|-|-|-|
+|启动|秒级|分钟级|
+|硬盘占用|MB 级|GB 级|
+|性能|接近原生|弱于原生|
+|系统支持量|上千个容器|数十个虚拟机|
+
+</v-click>
+
+---
+
+# 总结：为什么要用 Docker？
+
+<v-clicks>
+
+- 灵活：容器可以随时启动、停止、删除，不会对宿主机造成影响
+
+- 隔离：容器之间相互隔离，互不影响
+
+- 可移植：容器可以在不同的宿主机上运行
+
+- 可复用：容器可以被打包并交付给其他人使用
+
+- **轻量级**：容器只包含应用及其运行环境，不需要虚拟出完整的操作系统
+
+</v-clicks>
+
+---
+layout: section
+---
+
+# 基本概念
+
+---
+
+# 镜像
+
+<v-clicks>
+
+- 操作系统分为**内核**和**用户空间**
+
+- 内核启动后，挂载 root 文件系统 `/`，提供用户空间支持
+
+- Docker 镜像就是一个特殊的 root 文件系统
+
+  - 在这一意义上和 ISO 等镜像文件一样
+
+- 除了提供应用运行所需的程序、库、资源、配置等文件外，还包含了一些配置参数，如挂载卷 (Mounted Volumes)、环境变量、网络配置等
+
+- 镜像是**静态**的，不包含任何动态数据，其内容在构建之后不再改变
+
+</v-clicks>
+
+---
+
+# 分层存储
+
+<v-clicks>
+
+- 听起来 Docker 镜像像一个压缩包？
+
+- 但实际上 Docker 镜像是由一层一层的文件系统组成的，换句话说，是一堆压缩包
+
+- UnionFS (联合文件系统) 技术可将不同的文件系统联合挂载 (Union Mount) 到同一个目录下
+
+- 不同文件系统叠加形成最终镜像中的 root 文件系统
+
+- 同样，镜像构建也是一层层叠加进行的，后面将会详细讲解
+
+- 记住镜像是**多层**的，这对于理解 Docker 镜像的构建、容器的运行机制很重要
+
+</v-clicks>
+
+---
+
+# 容器
+
+<v-clicks>
+
+- 通过类 (静态定义)，我们可以创建一个实例 (动态存在)
+
+- 通过程序 (静态定义)，我们可以创建一个进程 (动态存在)
+
+- 同样地，通过镜像 (静态定义)，我们可以创建一个容器 (动态存在)
+
+- 创建实例时，类的定义不会被修改
+
+- 启动进程时，程序的定义不会被修改
+
+- 同样地，创建容器时，镜像的内容不会被修改
+
+</v-clicks>
+
+---
+
+# 容器的运行
+
+<v-clicks>
+
+- 回忆镜像是多层的
+
+- 容器运行时，Docker 在镜像的最顶层创建一个可读写的**容器存储层**，应用就在镜像层和存储层叠加后形成的文件系统中运行
+
+- 容器本质上就是在这一特殊文件系统中运行的一个 (或一些) 进程
+
+- 特殊之处在于，这些进程运行在独立的**命名空间** (Namespace) 之中
+
+- 容器命名空间中，文件系统以及用户管理、进程空间、网络配置等环境完全与操作系统中的其他进程隔离
+
+  - 在应用看来，自己像是独享整个操作系统一样
+
+  - 这也带来了安全性的提升
+
+</v-clicks>
+
+---
+
+# 容器的运行
+
+<v-clicks>
+
+- 容器存储层的生存周期和容器一样，容器消亡时，容器存储层也随之消亡
+
+- 因此，**容器是易失的**，并不能持久化保存数据
+
+- 要让容器持久化保存数据，需要使用**数据卷** (Volume) 或**绑定挂载** (Bind Mount)
+
+  - 数据卷：供一个或多个容器使用的特殊目录，绕过 UnionFS，可以实现数据共享和持久化；容器消亡时，数据卷不会消亡
+
+  - 绑定挂载：将宿主机上的目录挂载到容器中
+
+</v-clicks>
+
+---
+
+# 仓库
+
+<v-clicks>
+
+- 镜像构建完成后，需要一个集中的存储、分发镜像的服务
+
+- 这类服务被称为**注册服务** (Registry)，[Docker Hub](https://hub.docker.com) 是官方的、最大的 Docker 镜像注册服务
+
+- 在一个注册服务上有大量来自官方或个人的镜像可供使用，我们需要一种方式来标识镜像
+
+- 注册服务将镜像分为不同的**仓库** (Repository)，每个仓库包含一个或多个**标签** (Tag)
+
+- 一个仓库包含同一个应用的各种镜像，标签则标识不同版本的镜像
+
+  - 例如 `ubuntu:18.04` 和 `ubuntu:20.04` 都是 `ubuntu` 仓库中的标签
+
+- 完整的仓库名由用户名和应用名组成，类似 GitHub 仓库
+
+  - 例如 `jkjkmxmx/sast2023-linux-git`，这是暑培 Linux / Git 课程的镜像仓库
+
+- 若不包含用户名，默认为 `library`，这是 Docker 官方用户；若不包含标签，则默认为 `latest`
+
+  - 例如若指定镜像为 `alpine`，实际上指向 `library/alpine:latest`
+
+</v-clicks>
