@@ -338,7 +338,7 @@ layout: section
 
 - 基于指定标签的镜像运行一个新容器，并执行指定命令
 
-``` shell
+```shell
 docker run <image:tag> <command>
 ```
 
@@ -348,7 +348,7 @@ docker run <image:tag> <command>
 
 - 在后台运行一个新容器执行指定命令，并显示容器 ID
 
-``` shell
+```shell
 docker run --detach/-d <image> <command>
 ```
 
@@ -358,7 +358,7 @@ docker run --detach/-d <image> <command>
 
 - 使用交互模式 (打开标准输入) 并分配伪终端 (Pseudo-Teletypewriter, PTY) 运行容器，并在结束后删除容器；常用于交互式应用
 
-``` shell
+```shell
 docker run --rm --interactive/-i --tty/-t <image> <command>
 ```
 
@@ -395,12 +395,14 @@ layout: statement
 # *Demo*
 
 <!-- 
-``` shell
+```shell
 docker run --rm hello-world
 docker run --rm alpine echo 'Hello, world!'
 docker run -it --rm alpine
 # ls
 # cat /etc/os_release
+# apk add sl
+# sl
 # ^D
 docker run -d -p 80:80 nginx
 curl localhost
@@ -417,7 +419,7 @@ ssh train@localhost -p 22222
 
 # `docker run` 做了什么？
 
-``` shell
+```shell
 docker run alpine echo 'Hello, world!'
 ```
 
@@ -451,6 +453,8 @@ docker run alpine echo 'Hello, world!'
 
 - `docker cp`：将文件复制到容器中或从容器中复制出来
 
+- `docker attach`：连接到正在后台运行的容器；使用 `^P^Q` 断开连接让容器回到后台
+
 - `docker stop`：停止容器
 
 - `docker rm`：删除容器
@@ -464,11 +468,16 @@ layout: statement
 # *Demo*
 
 <!-- 
-``` shell
+
+```shell
 docker ps
 docker logs <container_name>
 docker rename <container_name> nginx
 docker ps
+docker attach nginx
+<new terminal>
+curl localhost
+^P^Q
 docker exec -it nginx cat /etc/nginx/conf.d/default.conf
 docker cp train:mails .
 mails
@@ -480,6 +489,7 @@ docker ps -a
 docker ps -aq | xargs docker rm
 docker ps -a
 ```
+
  -->
 
 ---
@@ -520,7 +530,7 @@ layout: section
 
 - 将下列内容写入名为 `Dockerfile` 的文件：
 
-``` dockerfile
+```dockerfile
 FROM alpine
 
 CMD ["echo", "Hello, world!"]
@@ -532,7 +542,7 @@ CMD ["echo", "Hello, world!"]
 
 - 在同一目录下，执行如下命令：
 
-``` shell
+```shell
 docker build -t hello:echo .
 ```
 
@@ -542,7 +552,7 @@ docker build -t hello:echo .
 
 - 运行镜像：
 
-``` shell
+```shell
 docker run --rm hello:echo
 ```
 </v-click>
@@ -559,6 +569,254 @@ layout: statement
 
 # *Demo*
 
+<!-- 
+
+```shell
+hello
+docker build -t hello:echo .
+docker run --rm hello:echo
+```
+
+ -->
+
 ---
 
+# Dockerfile
 
+<v-clicks>
+
+- Dockerfile 由一系列构建指令组成，刚才我们见到了两条：
+
+  - `FROM`：指定基础镜像
+
+  - `CMD`：指定容器启动时运行的命令
+
+- Dockerfile 中的每条指令都会创建一个新的镜像层
+
+- 指令会按顺序执行，每条指令都会在上一条指令的基础上进行修改
+
+- `CMD` 指令有两种格式，一种是上面所见的 exec 格式，会被解析为 JSON 数组，直接以数组首项的程序启动并将其余参数作为 argv 传入
+
+- 另一种是 Shell 格式，会被解析为字符串然后传给 Shell 执行，默认为 `/bin/sh -c`
+
+  - 例如 `CMD echo 'Hello, world!'` 相当于 `CMD ["/bin/sh", "-c", "echo 'Hello, world!'"]`
+
+- 由于 Shell 格式会多启动一个 Shell 进程，一般推荐使用 exec 格式
+
+</v-clicks>
+
+
+
+---
+
+# 镜像管理命令
+
+是时候介绍更多的 Docker 命令了！
+
+<v-clicks>
+
+- `docker login`：登录到注册服务
+
+- `docker pull`：从注册服务下载镜像到本地
+
+- `docker push`：将本地镜像上传到注册服务
+
+- `docker build`：根据 Dockerfile 构建镜像
+
+- `docker images`：列出本地镜像
+
+- `docker rmi`：删除本地镜像
+
+</v-clicks>
+
+---
+
+# 编译型应用
+
+<v-click>
+
+- 当应用使用的语言为编译型语言时，最终将会产生可直接运行的二进制文件
+
+</v-click>
+
+<v-click>
+
+- `main.rs`:
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+</v-click>
+
+<v-click>
+
+- `Dockerfile`: 
+
+```dockerfile
+FROM rust
+
+COPY main.rs .
+
+RUN rustc main.rs
+
+CMD ["./main"]
+```
+
+</v-click>
+
+---
+
+# 构建上下文
+
+<v-clicks>
+
+- 又出现了新指令 `COPY` 和 `RUN`，我们来看看这两条指令的作用
+
+- `COPY`，看起来很好理解，将文件复制到镜像中
+
+- ...从哪里？我们在 `Dockerfile` 中指定的文件路径是相对于什么的？
+
+- 目标路径是相对于镜像的工作目录，默认为根目录，那么源路径呢？
+
+- 注意到我们每次执行 `docker build` 时，末尾都有一个 `.` 了吗？它并不是指定 Dockerfile 的路径，而是指定了**构建上下文** (Build Context)
+
+  - Dockerfile 的路径使用 `--file/-f` 命令指定
+
+</v-clicks>
+
+---
+
+# 构建上下文
+
+<v-clicks>
+
+- 首先要明确的是，当我们使用 `docker` 命令时，我们只是在使用 Docker CLI (Command Line Interface) 客户端与 Docker 引擎服务端 `dockerd` 通信
+
+- 构建镜像时，Docker CLI 首先将构建上下文发送给 Docker 引擎，之后 Docker 引擎在需要复制文件时，会从构建上下文中复制
+
+- 因此在 `COPY` 命令中使用的源路径是相对于构建上下文的，而非 Dockerfile 所在目录，虽然这二者常常相同
+
+- 正因如此，我们应该尽量减少构建上下文的大小，以加快构建速度
+
+- 可以将构建时不需要发送的文件放在 `.dockerignore` 文件中，这个文件的格式和 `.gitignore` 类似
+
+  - 例如 `target` 目录、`.git` 目录等
+
+</v-clicks>
+
+---
+
+# 分层构建与 `RUN`
+
+<v-clicks>
+
+- `RUN` 指令用于在构建过程中执行一条指令，请注意它与 `CMD` 的区别：
+
+  - `RUN` 指令在镜像构建时执行，而 `CMD` 指令在容器启动时执行
+
+- 如果你还记得镜像是多层的，那么你可能会想到，每条 `RUN` 指令都会创建一个新的镜像层
+
+- 因此，我们应该尽量将多条 `RUN` 指令合并为一条，以减少镜像层数
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+
+```shell
+../compile
+e
+docker build -t hello:compile .
+docker run --rm hello:compile
+
+docker images
+```
+
+ -->
+
+---
+
+# 多阶段构建
+
+<v-clicks>
+
+- 一切看起来都很好，直到我们发现这个 Hello World 镜像的大小竟然有 1.35 GB...
+
+- 由于应用的分发以容器为单位，这意味着其他用户想要运行我们的 Hello World，需要下载 1.35 GB 的镜像
+
+- 这显然是不可接受的
+
+- 原因就在于分层构建：我们的镜像基于 `gcc` 镜像，而它包含了 GCC 编译器、标准库等等组成部分
+
+- 但我们只是希望用它来编译程序，编译完成后我们的程序不需要这些也能够独立运行
+
+- 既然如此，我们可以在构建过程中使用多个阶段，每个阶段都是一个镜像，最终的镜像只包含我们需要的部分
+
+</v-clicks>
+
+---
+
+# 多阶段构建
+
+<v-click>
+
+- `Dockerfile`:
+
+```dockerfile　{1-11|5|7-9}
+FROM gcc AS build
+
+COPY main.cpp .
+
+RUN g++ main.cpp -o main -static
+
+FROM scratch
+
+COPY --from=build main .
+
+CMD ["./main"]
+```
+
+</v-click>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+
+```shell
+docker build -t hello:slim .
+docker run --rm hello:slim
+docker images
+
+```
+
+ -->
+
+---
+
+# 多阶段构建
+
+<v-clicks>
+
+- 整个构建被分为以 `FROM` 指令隔开的多个阶段，每个阶段构建的镜像互相独立
+
+- `FROM scratch` 指定了一个空镜像作为最终镜像的基础镜像，这是一个特殊的镜像，它不包含任何文件系统
+
+- `COPY --from=build /main .` 从 `build` 阶段的镜像中复制 `/main` 程序到当前镜像的工作目录
+
+- 最终的镜像只包含了 `/main` 程序，大小仅 2.31 MB
+
+  - 由于 `scratch` 镜像不包含标准库，我们需要用 `-static` 选项静态链接标准库
+
+</v-clicks>
