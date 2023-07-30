@@ -321,3 +321,181 @@ layout: section
   - 例如若指定镜像为 `alpine`，实际上指向 `library/alpine:latest`
 
 </v-clicks>
+
+---
+layout: section
+---
+
+# 基本命令
+
+---
+
+# `docker run`
+
+在新容器中运行一个命令
+
+<v-click>
+
+- 基于指定标签的镜像运行一个新容器，并执行指定命令
+
+``` shell
+docker run <image:tag> <command>
+```
+
+</v-click>
+
+<v-click>
+
+- 在后台运行一个新容器执行指定命令，并显示容器 ID
+
+``` shell
+docker run --detach/-d <image> <command>
+```
+
+</v-click>
+
+<v-click>
+
+- 使用交互模式 (打开标准输入) 并分配伪终端 (Pseudo-Teletypewriter, PTY) 运行容器，并在结束后删除容器；常用于交互式应用
+
+``` shell
+docker run --rm --interactive/-i --tty/-t <image> <command>
+```
+
+</v-click>
+
+<v-click>
+
+- 值得注意的是，`docker run` 命令自身的选项必须放在镜像名前面，否则会被当成传递给容器的命令行参数
+
+</v-click>
+
+---
+
+# `docker run`
+
+一些其他选项：
+
+<v-clicks>
+
+- `--name <name>`：指定容器名
+
+- `--env/-e <variable>=<value>` 或 `--env/-e <variable>`：设置环境变量，后者从当前环境中获取
+
+- `--volume/-v <host_path>:<container_path>`：绑定挂载，将宿主机上的目录挂载到容器中
+
+- `--publish/-p <host_port>:<container_port>`：端口映射，将容器中的端口映射到宿主机上
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+``` shell
+docker run --rm hello-world
+docker run --rm alpine echo 'Hello, world!'
+docker run -it --rm alpine
+# ls
+# cat /etc/os_release
+# ^D
+docker run -d -p 80:80 nginx
+curl localhost
+docker run -d -p 22222:22 --name train jkjkmxmx/sast2023-linux-git
+ssh train@localhost -p 22222
+*password*
+# ls
+# cd mails
+# cat *
+```
+ -->
+
+---
+
+# `docker run` 做了什么？
+
+``` shell
+docker run alpine echo 'Hello, world!'
+```
+
+<v-clicks>
+
+- 首先在本地，然后在注册服务 (默认为 Docker Hub) 搜索镜像 `alpine`，若本地不存在，则从注册服务下载镜像到本地
+
+- 使用 `alpine` 镜像创建一个新的容器并启动
+
+- 在容器中运行我们指定的命令 `echo 'Hello, world!'`，若没有指定命令，则运行镜像设置的默认命令
+
+- 当容器的启动命令执行完毕后，终止容器；注意默认情况下容器终止后并不会被删除
+
+  - 这是为了方便查看容器的运行日志，进行调试等
+
+</v-clicks>
+
+---
+
+# 其他容器相关命令
+
+<v-clicks>
+
+- `docker ps`：列出正在运行的容器，`--all/-a` 选项还会列出已停止的容器
+
+- `docker rename`：重命名容器
+
+- `docker exec`：在运行中的容器中执行命令
+
+- `docker logs`：查看容器的标准输出
+
+- `docker cp`：将文件复制到容器中或从容器中复制出来
+
+- `docker stop`：停止容器
+
+- `docker rm`：删除容器
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+``` shell
+docker ps
+docker logs <container_name>
+docker rename <container_name> nginx
+docker ps
+docker exec -it nginx cat /etc/nginx/conf.d/default.conf
+docker cp train:mails .
+mails
+e
+bat *
+docker stop nginx train
+docker ps
+docker ps -a
+docker ps -aq | xargs docker rm
+docker ps -a
+```
+ -->
+
+---
+layout: section
+---
+
+# Dockerfile
+
+---
+
+# 镜像的构建
+
+- 现在我们已经是使用 Docker 容器的高手了！
+
+- 但是我们使用的都是别人的镜像...我们如何构建自己的镜像呢？
+
+- 
+
+
