@@ -492,10 +492,73 @@ layout: section
 
 # 镜像的构建
 
+<v-clicks>
+
 - 现在我们已经是使用 Docker 容器的高手了！
 
 - 但是我们使用的都是别人的镜像...我们如何构建自己的镜像呢？
 
-- 
+- 回忆镜像是多层的，我们可以通过在其他基础镜像上添加一层层的修改来构建自己的镜像，这正是 Docker 镜像的强大之处
+
+- 但是，我们要怎么「添加一层」呢？
+
+  - 按最原始的 UnionFS 理解，我们将修改后最顶层的文件系统打包，然后和原镜像的文件系统叠加，就得到了新的镜像
+
+  - 这就是 `docker commit` 命令的原理，但实际上极少这么做
+
+- 回忆一下我们是怎么教别人配环境的：第一步先下载这个，然后复制那个，跑这条指令……
+
+- 我们可以用同样的方式，编写一个脚本，将我们的修改步骤一步步地写下来，这就是 Dockerfile
+
+</v-clicks>
+
+---
+
+# Hello World From Dockerfile
+
+<v-click>
+
+- 将下列内容写入名为 `Dockerfile` 的文件：
+
+``` dockerfile
+FROM alpine
+
+CMD ["echo", "Hello, world!"]
+```
+
+</v-click>
+
+<v-click>
+
+- 在同一目录下，执行如下命令：
+
+``` shell
+docker build -t hello:echo .
+```
+
+</v-click>
+
+<v-click>
+
+- 运行镜像：
+
+``` shell
+docker run --rm hello:echo
+```
+</v-click>
+
+<v-click>
+
+- `alpine` 是 Alpine Linux，一个轻量级的 Linux 发行版的镜像，大小仅 5 MB，是构建镜像的推荐基础镜像
+
+</v-click>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+---
 
 
