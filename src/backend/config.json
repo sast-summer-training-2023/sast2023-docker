@@ -1,0 +1,8 @@
+{
+    "db_host": "db",
+    "db_port": 3306,
+    "db_user": "root",
+    "db_pass": "my-secret-pw",
+    "db_name": "leaderboard",
+    "db_charset": "utf8mb4"
+}

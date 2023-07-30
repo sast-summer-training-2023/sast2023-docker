@@ -923,4 +923,296 @@ docker run --rm quote '4G + HarmonyOS > 5G'
 
 </v-clicks>
 
+---
 
+# 解释型应用
+
+<v-clicks>
+
+- 若应用是编译型语言编写的，我们只需要在构建镜像时编译应用，然后在最终的镜像中运行编译好的二进制文件即可
+
+- 但若应用是解释型语言编写的，事情就将变得麻烦一点
+
+- 我们将以 2022 暑培的 Django 后端作业为例，介绍如何构建一个 Python 应用的镜像
+
+</v-clicks>
+
+---
+
+# 解释型应用
+
+<v-clicks>
+
+- 回忆 Dockerfile 就是在描述如何配置环境，我们考虑在本地如何从零开始运行一个 Django 应用
+
+- 1. 安装 Python
+
+- 2. 使用 `pip` 安装依赖
+
+- 3. 安装 `uWSGI` 用于运行应用
+
+- 4. 编辑应用所需的配置文件
+
+- 5. 执行数据库迁移
+
+- 6. 启动 uWSGI
+
+- 我们只需要按这个过程编写 Dockerfile 即可
+
+</v-clicks>
+
+---
+
+# 解释型应用
+
+<v-clicks>
+
+```dockerfile
+FROM python
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --no-cache-dir -r requirements.txt \
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --no-cache-dir uwsgi && \
+    mkdir -p config
+
+COPY . .
+
+EXPOSE 80
+
+CMD ["/bin/sh", "start.sh"]
+```
+
+- `WORKDIR` 指定了工作目录，后续 `COPY`、`RUN` 等指令都在工作目录执行，容器启动后工作目录也是这里
+
+- `-i` 选项对 `pip` 换源以提高速度，`--no-cache-dir` 禁用 `pip` 的缓存以减小镜像大小
+
+- 注意提前 `COPY requirements.txt` 并 `RUN pip install`，这样可以利用 Docker 的缓存机制，若 `requirements.txt` 没有变化，则 `pip install` 也不会重新执行
+
+</v-clicks>
+
+---
+
+# Docker 容器的网络
+
+<v-clicks>
+
+- 容器的网络配置也处于单独的命名空间中，因此理论上容器是与外界隔绝的
+
+- Docker 会为容器配置默认网桥，将容器置于同一个子网下，容器之间可以通过 IP 地址互相访问
+
+- 同时，Docker 的默认网关也会对容器对外的网络请求进行转发，使容器可以访问外网
+
+- 若要让外界可以访问容器，需要让容器对外暴露端口并进行端口映射
+
+- `EXPOSE` 指令指定了容器对外暴露的端口，这里是 HTTP 端口 `80`
+
+  - 但仍需要使用 `-p` 选项将容器端口映射到宿主机上才可从外界访问
+
+</v-clicks>
+
+---
+
+# 解释型应用
+
+<v-clicks>
+
+- 我们跳过了编辑配置文件这一步骤，因为配置文件往往包含数据库密码等敏感信息，我们不希望将其写入镜像中
+
+- 当启动命令较多时，常常将命令置于一个 Shell 脚本中
+
+</v-clicks>
+
+<v-click>
+
+- `start.sh`:
+
+```shell
+python3 manage.py makemigrations &&
+python3 manage.py migrate &&
+uwsgi --ini uwsgi.ini
+```
+
+</v-click>
+
+---
+
+# 数据卷
+
+<v-clicks>
+
+- 我们在这个例子中采用 MySQL 数据库，MySQL 是客户端-服务器架构，我们可以将数据库运行在一个容器中，而应用运行在另一个容器中
+
+- 前面提到过，容器是易失的，因此数据库的数据不能保存在容器存储层
+
+- 我们需要使用数据卷将数据库的数据保存在宿主机上
+
+- 数据卷可以在容器之间共享，不随容器的删除而删除
+
+</v-clicks>
+
+<v-click>
+
+- 创建数据卷：
+
+```shell
+docker volume create db
+```
+
+</v-click>
+
+---
+
+# 数据卷
+
+<v-click>
+
+- 在运行容器时，使用 `--mount` 选项将数据卷挂载到容器中：
+
+```shell
+docker run -d \
+  --name db \
+  --mount source=db,target=/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql
+```
+
+</v-click>
+
+<v-clicks>
+
+- `--mount` 选项的参数格式为 `source=<volume_name>,target=<mount_point>`，`source` 指定数据卷名，`target` 指定挂载点
+
+  - 和 `--volume` 的功能有部分重合，但 `--mount` 是更新的选项，可以实现更精细的控制
+
+</v-clicks>
+
+---
+
+# 创建数据库
+
+<v-clicks>
+
+- 在容器中执行 `mysql` 命令：
+
+```shell
+docker exec -it db mysql -p
+```
+
+- 创建数据库：
+
+```sql
+CREATE DATABASE django;
+```
+
+</v-clicks>
+
+---
+
+# 创建网络
+
+<v-clicks>
+
+- 在默认的网桥中，容器之间只能通过 IP 地址访问，这带来了一定的不便
+
+- 我们可以为需要通信的容器创建一个网络，使其可以通过容器名互相访问
+
+- 创建网络：
+
+```shell
+docker network create backend
+```
+
+- 使数据库容器加入网络：
+
+```shell
+docker network connect backend db
+```
+
+</v-clicks>
+
+---
+
+# 配置文件
+
+<v-click>
+
+- `config.json`:
+
+```json
+{
+    "db_host": "db",
+    "db_port": 3306,
+    "db_user": "root",
+    "db_pass": "my-secret-pw",
+    "db_name": "leaderboard",
+    "db_charset": "utf8mb4"
+}
+```
+
+</v-click>
+
+<v-click>
+
+- 可以看到在配置好网络后，直接使用容器名即可访问同一网络中的其他容器，且该容器不需要暴露端口
+
+</v-click>
+
+---
+
+# 运行后端
+
+<v-clicks>
+
+- 前面提到，由于安全原因，不应该直接将配置文件写入镜像中
+
+- 我们需要在运行后端容器时使用 `--mount type=bind` 将配置文件挂载到容器中，这样就可以在不写入镜像的前提下使用配置文件了
+
+```shell
+docker run -d \
+  --name backend \
+  --mount type=bind,source=$(pwd)/config.json,target=/app/config.json,readonly \
+  --network backend \
+  -p 80:80 backend
+```
+
+
+
+- `source` 需要使用绝对路径，指定 `readonly` 以防配置文件被改写
+
+- 由于后端容器需要暴露给外网，我们还使用 `-p` 选项将容器的 `80` 端口映射到宿主机的 `80` 端口
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+
+```shell
+../backend
+docker build -t backend .
+docker volume create db
+docker run -d \
+  --name db \
+  --mount source=db,target=/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql
+docker exec -it db mysql -p
+<password>
+CREATE DATABASE django;
+^D
+docker network create backend
+docker network connect backend db
+docker run -d \
+  --name backend \
+  --mount type=bind,source=$(pwd)/config.json,target=/app/config.json,readonly \
+  --network backend \
+  -p 80:80 backend
+curl localhost
+```
+
+ -->
