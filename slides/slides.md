@@ -649,11 +649,14 @@ docker run --rm hello:hello
 
 <v-click>
 
-- `main.rs`:
+- `main.cpp`:
 
-```rust
-fn main() {
-    println!("Hello, world!");
+```cpp
+#include <iostream>
+using std::cout, std::endl;
+
+int main() {
+    cout << "Hello, world!" << endl;
 }
 ```
 
@@ -664,11 +667,11 @@ fn main() {
 - `Dockerfile`: 
 
 ```dockerfile
-FROM rust
+FROM gcc
 
-COPY main.rs .
+COPY main.cpp .
 
-RUN rustc main.rs
+RUN g++ main.cpp -o main
 
 CMD ["./main"]
 ```
@@ -1129,7 +1132,7 @@ docker exec -it db mysql -p
 - 创建数据库：
 
 ```sql
-CREATE DATABASE django;
+CREATE DATABASE leaderboard;
 ```
 
 </v-clicks>
