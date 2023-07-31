@@ -5,8 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --no-cache-dir uwsgi && \
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --no-cache-dir -r requirements.txt && \
-    mkdir -p config
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --no-cache-dir -r requirements.txt
 
 COPY . .
 

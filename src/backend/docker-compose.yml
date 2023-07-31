@@ -1,19 +1,20 @@
 volumes:
-  db-vol:
+  db:
 
 services:
   backend:
     build: .
     ports:
-      - "9000:80"
+      - "80:80"
     volumes:
-      - "${PWD}/config.json:/config/config.json"
+      - "$PWD/config.json:/app/config.json:ro"
     restart: unless-stopped
 
-  mysql:
-    image: mysql:latest
+  db:
+    image: mysql
     volumes:
-      - "db-vol:/var/lib/mysql"
+      - "db:/var/lib/mysql"
     environment:
-        MYSQL_ROOT_PASSWORD: "1234"
+        MYSQL_ROOT_PASSWORD: "my-secret-pw"
         MYSQL_DATABASE: leaderboard
+    restart: unless-stopped

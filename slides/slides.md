@@ -1172,7 +1172,7 @@ docker network connect backend db
 ```shell
 docker run -d \
   --name backend \
-  --mount type=bind,source=$(pwd)/config.json,target=/app/config.json,readonly \
+  --mount type=bind,source=$PWD/config.json,target=/app/config.json,readonly \
   --network backend \
   -p 80:80 backend
 ```
@@ -1196,10 +1196,10 @@ layout: statement
 ```shell
 ../backend
 docker build -t backend .
-docker volume create db
+docker volume create db-vol
 docker run -d \
   --name db \
-  --mount source=db,target=/var/lib/mysql \
+  --mount source=db-vol,target=/var/lib/mysql \
   -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql
 docker exec -it db mysql -p
 <password>
@@ -1209,10 +1209,154 @@ docker network create backend
 docker network connect backend db
 docker run -d \
   --name backend \
-  --mount type=bind,source=$(pwd)/config.json,target=/app/config.json,readonly \
+  --mount type=bind,source=$PWD/config.json,target=/app/config.json,readonly \
   --network backend \
   -p 80:80 backend
 curl localhost
 ```
 
  -->
+
+---
+layout: section
+---
+
+# Docker Compose
+
+---
+
+# Docker Compose
+
+<v-clicks>
+
+- 我们确实使用 Dockerfile 让镜像的构建变得简单了，但是...
+
+- 这一大串运行容器的命令和手动配环境有什么区别啊！
+
+- 于是有了 Docker Compose 将容器运行的过程也自动化，我们只需要编写一个配置文件，就可以一键启动所有容器
+
+</v-clicks>
+
+---
+
+# Docker Compose
+
+<v-clicks>
+
+- Docker Compose 是用于实现对容器集群快速编排 (Orchestration) 的工具，它使用 YAML 文件来配置应用的服务，然后使用 `docker compose` 命令来一键启动、停止、重启应用的服务
+
+- YAML 速通：多数字符串都不需要加引号，除非其中包含冒号等特殊字符
+
+```yaml
+dict:
+  key: value
+  list:
+    - item1
+    - item2
+```
+
+- 等价于如下 JSON：
+  
+```json
+{
+  "dict": {
+    "key": "value",
+    "list": [
+      "item1",
+      "item2"
+    ]
+  }
+}
+```
+
+</v-clicks>
+
+---
+
+# Docker Compose
+
+<v-clicks>
+
+- `docker-compose.yml`:
+
+```yaml
+volumes:
+  db:
+
+services:
+  backend:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - "${PWD}/config.json:/config.json:ro"
+    restart: unless-stopped
+
+  mysql:
+    image: mysql
+    volumes:
+      - "db:/var/lib/mysql"
+    environment:
+        MYSQL_ROOT_PASSWORD: "my_secret_pw"
+        MYSQL_DATABASE: leaderboard
+```
+
+- 每个服务对应一个镜像所运行的容器，`build` 指定了 Dockerfile 所在的路径，`image` 指定了镜像名
+
+</v-clicks>
+
+---
+
+# Docker Compose
+
+<v-clicks>
+
+- 大部分选项都与 `docker run` 中相对应
+
+- Docker Compose 会自动创建连接各个服务的网络，因此无需手动指定
+
+- 由于我们不再手动进入 MySQL 创建数据库，我们使用环境变量 `MYSQL_DATABASE` 指定初始数据库
+
+  - 这里都是为了演示方便，实际上不应该把密码和数据库直接写在 Docker Compose 配置中
+
+- `restart` 指定了容器的重启策略，这里是除非手动停止，否则总是重启
+
+</v-clicks>
+
+---
+
+# Docker Compose
+
+<v-clicks>
+
+- 现在要启动所有容器，只需要一行：
+
+```shell
+docker compose up
+```
+
+- `docker compose down`：停止并删除所有容器，移除建立的网络
+
+- `docker compose logs`：查看服务日志
+
+- `docker compose exec`：在某一容器中执行命令
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+# *Demo*
+
+<!-- 
+
+```shell
+docker compose up
+curl localhost
+docker compose down
+curl localhost
+```
+
+ -->
+
