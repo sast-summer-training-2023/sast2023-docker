@@ -20,7 +20,7 @@ asd
 
 ---
 layout: image-right
-image: 'assets/docker.png'
+image: '/docker.png'
 ---
 
 # Docker
@@ -40,7 +40,7 @@ image: 'assets/docker.png'
 
 ---
 layout: image-right
-image: 'assets/moby-with-friends.png'
+image: '/moby-with-friends.png'
 ---
 
 # Docker
