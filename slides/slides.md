@@ -963,6 +963,24 @@ docker run --rm quote '4G + HarmonyOS > 5G'
 
 ---
 
+# 一些其他构建指令
+
+<v-clicks>
+
+- `ADD`: 与 `COPY` 类似，但可以自动解压压缩包；一般除了此场景外，都使用 `COPY`
+
+- `ENV`: 设置环境变量，形如 `ENV <key> <value>` 或 `ENV <key>=<value>`，在后续的 `RUN` 等指令以及运行的容器中都会保留
+
+- `ARG`: 与 `ENV` 类似，但不在运行的容器中保留
+
+- `VOLUME`: 定义匿名卷，形如 `VOLUME /data`，此时若运行时未指定挂载点，则会创建一个匿名数据卷挂载到 `/data` 以防止容器存储层的数据丢失
+
+- `USER`: 指定后续 `RUN`、`CMD` 等指令的执行用户
+
+</v-clicks>
+
+---
+
 # 解释型应用
 
 <v-clicks>
@@ -1359,4 +1377,41 @@ curl localhost
 ```
 
  -->
+
+---
+layout: section
+---
+
+# 更多内容
+
+---
+
+# 更多内容
+
+<v-clicks>
+
+- BuildKit & `docker buildx`: 多系统架构镜像构建
+
+- Docker Swarm: 多节点集群管理与编排，类似 Kubernetes (k8s)
+
+- podman: 下一代 Linux 容器工具
+
+</v-clicks>
+
+---
+
+# 参考资料
+
+- [Docker Docs](https://docs.docker.com/)
+
+- [Docker 从入门到实践](https://yeasy.gitbook.io/docker_practice/)
+
+- [2022 年酒井科协暑培 Docker 课程文档](https://liang2kl.github.io/2022-summer-training-docker-tutorial/)
+
+---
+layout: section
+---
+
+# 谢谢
+
 
